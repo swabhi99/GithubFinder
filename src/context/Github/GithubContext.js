@@ -7,6 +7,7 @@
     
       const initialState = {
           users:[],
+          user:{},
           loading:false
       }     
      
@@ -22,15 +23,47 @@
             const response =  await fetch(`https://api.github.com/search/users?${params}`)
               const {items} = await response.json()
               dispatch({
-                  type:'GET_USER',
+                  type:'GET_USERS',
                   payload:items
               })
           } 
+
+          //Get user
+
+          const getUser = async (logi)=>{
+            
+            setLoading()
+            const response =  await fetch(`https://api.github.com/users/${logi}`)
+
+             if(response.status===404){
+                 window.location='/notfound'
+             }
+
+             else{
+                const data = await response.json()
+                dispatch({
+                    type:'GET_USER',
+                    payload:data
+                })
+             }
+             
+          } 
+
          // SETLOADING
            const setLoading = ()=>{dispatch({type:'SET_LOADING'})}
 
+           // clear users
+
+           const clearUsers = ()=>{
+               const user=[]
+            dispatch({
+                type:'CLEAR_USER',
+                payload:user
+            })
+           }
+
           return <GithubContext.Provider value={{
-              users:state.users,loading:state.loading,searchUser
+              users:state.users,loading:state.loading,searchUser,clearUsers,user:state.user,getUser
           }}>
                 {children}
           </GithubContext.Provider>

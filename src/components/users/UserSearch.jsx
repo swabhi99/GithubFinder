@@ -1,15 +1,24 @@
 import React from 'react'
 import { useState,useContext } from 'react'
 import GithubContext from '../../context/Github/GithubContext'
+import AlertContext from '../../context/Alert/AlertContext'
 
 function UserSearch() {
     const [text,setText] = useState('')
-    const {users,searchUser} = useContext(GithubContext)
+    const {users,searchUser,clearUsers} = useContext(GithubContext)
+    const {setAlert} = useContext(AlertContext)
     const onChangeHandler = (e)=> setText(e.target.value)
     const onSubmitHandler = (e)=>{
-        e.preventDefault()
+      e.preventDefault()
+      if(text===''){
+       setAlert('Please enter something','err')
+        return
+      }
         searchUser(text)
         setText('')
+    }
+    const onClear = ()=>{
+     clearUsers()
     }
   return (
      <div className='grid grid-cols-1 xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-2 mb-8 gap-8'>
@@ -38,7 +47,7 @@ function UserSearch() {
          (
           <div>
           <button
-          
+            onClick={onClear}
             className='btn btn-ghost btn-lg'
           >
             Clear
